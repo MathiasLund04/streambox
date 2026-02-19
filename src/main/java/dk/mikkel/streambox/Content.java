@@ -44,6 +44,7 @@ public class Content {
     }
 
     public void incrementViews() {
+
         views++;
     }
 }

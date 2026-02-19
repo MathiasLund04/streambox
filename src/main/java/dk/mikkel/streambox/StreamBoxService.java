@@ -24,6 +24,7 @@ public class StreamBoxService {
             throw new IllegalArgumentException("Age rating must either be 0, 7, 11, 15 or 18.");
         }
 
+
         int id = nextId++;
         Content newContent = new Content(id, title, genre, lengthMinutes, ageRating);
         catalog.add(newContent);
