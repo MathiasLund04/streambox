@@ -1,9 +1,6 @@
 package dk.mikkel.streambox;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class StreamBoxService {
 
@@ -63,13 +60,25 @@ public class StreamBoxService {
     }
 
     public List<Content> findByGenre(Genre genre) {
-        // bevidst: returnerer altid tom
-        return new ArrayList<>();
+        List<Content> specificGenre = new ArrayList<>();
+
+        for (Content content : catalog) {
+            if (content.getGenre() == genre) {
+                specificGenre.add(content);
+            }
+        }
+
+        specificGenre.sort(Comparator.comparing(Content::getTitle));
+        return specificGenre;
     }
 
     public int totalRuntimeByGenre(Genre genre) {
-        // bevidst: 0
-        return 0;
+        List<Content> specificGenre = findByGenre(genre);
+        int totalRuntime = 0;
+        for (Content content : specificGenre) {
+            totalRuntime += content.getLengthMinutes();
+        }
+        return totalRuntime;
     }
 
     public List<Content> topTrending(int n) {
@@ -85,7 +94,15 @@ public class StreamBoxService {
 
     public Optional<Content> mostViewedInGenre(Genre genre) {
         // bevidst: ingen resultater
-        return Optional.empty();
+        Content best = null;
+        for (Content c : catalog){
+            if (c.getGenre() == genre){
+                if (best == null || c.getViews() > best.getViews() || c.getViews() == best.getViews() && c.getTitle().compareTo(best.getTitle()) < 0) {
+                    best = c;
+                }
+            }
+        }
+        return Optional.ofNullable(best);
     }
 
     public boolean removeById(int id) {
