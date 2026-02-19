@@ -24,7 +24,6 @@ public class StreamBoxService {
             throw new IllegalArgumentException("Age rating must either be 0, 7, 11, 15 or 18.");
         }
 
-
         int id = nextId++;
         Content newContent = new Content(id, title, genre, lengthMinutes, ageRating);
         catalog.add(newContent);
@@ -52,6 +51,9 @@ public class StreamBoxService {
         }
 
         Content content = playing.get();
+        if (userAge < 0){
+            throw new IllegalArgumentException("Age cannot be negative.");
+        }
 
         if (userAge < content.getAgeRating()){
             return false;
@@ -71,8 +73,14 @@ public class StreamBoxService {
     }
 
     public List<Content> topTrending(int n) {
-        // bevidst: tom liste (og ingen validering)
-        return new ArrayList<>();
+        List<Content> top = getCatalog();
+        if (n <= 0){
+            throw new IllegalArgumentException("Number of top movies must be greater than 0.");
+        }
+
+        top.sort(Comparator.comparing(Content::getViews).reversed().thenComparing(Content::getTitle));
+
+        return top.subList(0, n);
     }
 
     public Optional<Content> mostViewedInGenre(Genre genre) {
@@ -81,7 +89,14 @@ public class StreamBoxService {
     }
 
     public boolean removeById(int id) {
-        // bevidst: fjerner aldrig noget
+        Content removing;
+        for  (Content c : catalog) {
+            if (c.getId() == id) {
+                removing = c;
+                catalog.remove(removing);
+                return true;
+            }
+        }
         return false;
     }
 }
