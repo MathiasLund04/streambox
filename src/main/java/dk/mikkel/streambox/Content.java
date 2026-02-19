@@ -44,6 +44,6 @@ public class Content {
     }
 
     public void incrementViews() {
-        // bevidst tomt: så tests kan fejle
+        views++;
     }
 }

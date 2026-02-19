@@ -1,5 +1,3 @@
-package streambox;
-
 import dk.mikkel.streambox.Content;
 import dk.mikkel.streambox.Genre;
 import dk.mikkel.streambox.StreamBoxService;

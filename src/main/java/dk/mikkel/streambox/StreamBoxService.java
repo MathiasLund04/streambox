@@ -7,24 +7,56 @@ import java.util.Optional;
 
 public class StreamBoxService {
 
+    private List<Content> catalog = new ArrayList<>();
+    private int nextId = 1;
+
     public Content addContent(String title, Genre genre, int lengthMinutes, int ageRating) {
-        // bevidst “forkert” og uden validering: så tests fejler
-        return new Content(0, title, genre, lengthMinutes, ageRating);
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Movie must contain a title.");
+        }
+        if (genre == null || genre.toString().isEmpty()) {
+            throw new IllegalArgumentException("Movie must contain genre.");
+        }
+        if (lengthMinutes <= 0 || lengthMinutes > 200) {
+            throw new IllegalArgumentException("Length of movie must be greater than 0.");
+        }
+        if (ageRating != 0 && ageRating != 7 && ageRating != 11 && ageRating != 15 && ageRating != 18) {
+            throw new IllegalArgumentException("Age rating must either be 0, 7, 11, 15 or 18.");
+        }
+
+        int id = nextId++;
+        Content newContent = new Content(id, title, genre, lengthMinutes, ageRating);
+        catalog.add(newContent);
+
+        return newContent;
     }
 
     public List<Content> getCatalog() {
-        // bevidst tomt katalog: så tests fejler
-        return Collections.emptyList();
+        return catalog;
     }
 
     public Optional<Content> findById(int id) {
-        // bevidst: finder aldrig noget
+        for (Content i : catalog) {
+            if (i.getId() == id) {
+                return Optional.of(i);
+            }
+        }
         return Optional.empty();
     }
 
     public boolean play(int contentId, int userAge) {
-        // bevidst: spiller aldrig noget
-        return false;
+        Optional<Content> playing = findById(contentId);
+        if (playing.isEmpty()){
+            return false;
+        }
+
+        Content content = playing.get();
+
+        if (userAge < content.getAgeRating()){
+            return false;
+        }
+        content.incrementViews();
+        return true;
     }
 
     public List<Content> findByGenre(Genre genre) {
