@@ -93,7 +93,6 @@ public class StreamBoxService {
     }
 
     public Optional<Content> mostViewedInGenre(Genre genre) {
-        // bevidst: ingen resultater
         Content best = null;
         for (Content c : catalog){
             if (c.getGenre() == genre){
